@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 import {
   Form,
   Input,
@@ -9,6 +10,8 @@ import {
   Header,
   Icon,
 } from "semantic-ui-react";
+
+import baseUrl from "../utils/baseUrl";
 
 const INITIAL_PRODUCT = {
   name: "",
@@ -38,12 +41,30 @@ const CreateProduct = () => {
     }
   };
 
-  const handleSubmit = (event) => {
+  const handleImageUpload = async () => {
+    const data = new FormData();
+    data.append("file", product.media);
+    data.append("upload_preset", "react-reserve");
+    data.append("cloud_name", "shaho");
+    const response = await axios.post(process.env.CLOUDINARY_URL, data);
+
+    const mediaUrl = response.data.url;
+    return mediaUrl;
+  };
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
+    const mediaUrl = await handleImageUpload();
+    console.log({ mediaUrl });
+
+    // const url = `${baseUrl}/api/product`;
+    // const payload = { ...product, mediaUrl };
+    // await axios.post(url, payload);
 
     setProduct(INITIAL_PRODUCT);
     setSuccess(true);
   };
+
   // ─── JSX ────────────────────────────────────────────────────────────────────────
   return (
     <>
