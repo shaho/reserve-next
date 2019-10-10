@@ -25,6 +25,7 @@ const CreateProduct = () => {
   const [product, setProduct] = useState(INITIAL_PRODUCT);
   const [mediaPreview, setMediaPreview] = useState("");
   const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   // ─── HANDLERS ───────────────────────────────────────────────────────────────────
   const handleChange = (event) => {
@@ -54,13 +55,17 @@ const CreateProduct = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setLoading(true);
+
     const mediaUrl = await handleImageUpload();
     console.log({ mediaUrl });
 
-    // const url = `${baseUrl}/api/product`;
-    // const payload = { ...product, mediaUrl };
-    // await axios.post(url, payload);
+    const url = `${baseUrl}/api/product`;
+    const payload = { ...product, mediaUrl };
+    const response = await axios.post(url, payload);
+    console.log({ response });
 
+    setLoading(false);
     setProduct(INITIAL_PRODUCT);
     setSuccess(true);
   };
@@ -72,7 +77,7 @@ const CreateProduct = () => {
         <Icon name="add" color="orange" />
         Create New Product
       </Header>
-      <Form success={success} onSubmit={handleSubmit}>
+      <Form loading={loading} success={success} onSubmit={handleSubmit}>
         <Message
           success
           icon="check"
@@ -126,6 +131,7 @@ const CreateProduct = () => {
 
         <Form.Field
           control={Button}
+          disabled={loading}
           color="blue"
           icon="pencil alternate"
           content="Submit"

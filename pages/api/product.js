@@ -9,6 +9,10 @@ export default async (request, response) => {
       await handleGetRequest(request, response);
       break;
 
+    case "POST":
+      await handlePostRequest(request, response);
+      break;
+
     case "DELETE":
       await handleDeleteRequest(request, response);
       break;
@@ -25,6 +29,26 @@ const handleGetRequest = async (request, response) => {
     const { _id } = request.query;
     const product = await Product.findById(_id);
     response.status(200).json(product);
+  } catch (error) {
+    console.error(error.message);
+  }
+};
+
+// ─── HANDLE POST REQUEST ────────────────────────────────────────────────────────
+const handlePostRequest = async (request, response) => {
+  try {
+    const { name, price, description, mediaUrl } = request.body;
+    if (!name || !price || !description || !mediaUrl)
+      return response.status(422).send("Product missing one or more fileds");
+
+    const product = await new Product({
+      name,
+      price,
+      description,
+      mediaUrl,
+    }).save();
+
+    response.status(201).json(product);
   } catch (error) {
     console.error(error.message);
   }
