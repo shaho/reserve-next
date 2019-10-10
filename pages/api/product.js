@@ -31,6 +31,7 @@ const handleGetRequest = async (request, response) => {
     response.status(200).json(product);
   } catch (error) {
     console.error(error.message);
+    response.status(404).send("Server error in retrieving product");
   }
 };
 
@@ -51,6 +52,7 @@ const handlePostRequest = async (request, response) => {
     response.status(201).json(product);
   } catch (error) {
     console.error(error.message);
+    response.status(500).send("Server error in creating product");
   }
 };
 
@@ -62,5 +64,6 @@ const handleDeleteRequest = async (request, response) => {
     response.status(204).json({});
   } catch (error) {
     console.error(error.message);
+    response.status(500).send("Server error in deleting product");
   }
 };

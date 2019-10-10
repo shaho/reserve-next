@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import {
   Form,
@@ -12,6 +12,7 @@ import {
 } from "semantic-ui-react";
 
 import baseUrl from "../utils/baseUrl";
+import catchErrors from "../utils/catchErrors";
 
 const INITIAL_PRODUCT = {
   name: "",
@@ -26,8 +27,20 @@ const CreateProduct = () => {
   const [mediaPreview, setMediaPreview] = useState("");
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [disabled, setDisabled] = useState(true);
+  const [error, setError] = useState("");
+
+  // ─── SIDEEFFECTS ────────────────────────────────────────────────────────────────
+  useEffect(() => {
+    //// Toggle submit button base on every field's value
+    const isProduct = Object.values(product).every((element) => {
+      return Boolean(element);
+    });
+    isProduct ? setDisabled(false) : setDisabled(true);
+  }, [product]);
 
   // ─── HANDLERS ───────────────────────────────────────────────────────────────────
+  //// handleChange
   const handleChange = (event) => {
     const { name, value, files } = event.target;
     if (name === "media") {
@@ -42,6 +55,7 @@ const CreateProduct = () => {
     }
   };
 
+  //// handleImageUpload
   const handleImageUpload = async () => {
     const data = new FormData();
     data.append("file", product.media);
@@ -53,21 +67,27 @@ const CreateProduct = () => {
     return mediaUrl;
   };
 
+  //// handleSubmit
   const handleSubmit = async (event) => {
-    event.preventDefault();
-    setLoading(true);
+    try {
+      event.preventDefault();
+      setLoading(true);
 
-    const mediaUrl = await handleImageUpload();
-    console.log({ mediaUrl });
+      const mediaUrl = await handleImageUpload();
 
-    const url = `${baseUrl}/api/product`;
-    const payload = { ...product, mediaUrl };
-    const response = await axios.post(url, payload);
-    console.log({ response });
+      const url = `${baseUrl}/api/product`;
+      const payload = { ...product, mediaUrl };
+      const response = await axios.post(url, payload);
 
-    setLoading(false);
-    setProduct(INITIAL_PRODUCT);
-    setSuccess(true);
+      setProduct(INITIAL_PRODUCT);
+      setMediaPreview("");
+      setSuccess(true);
+      // event.target.reset();
+    } catch (error) {
+      catchErrors(error, setError);
+    } finally {
+      setLoading(false);
+    }
   };
 
   // ─── JSX ────────────────────────────────────────────────────────────────────────
@@ -77,7 +97,14 @@ const CreateProduct = () => {
         <Icon name="add" color="orange" />
         Create New Product
       </Header>
-      <Form loading={loading} success={success} onSubmit={handleSubmit}>
+      <Form
+        loading={loading}
+        error={Boolean(error)}
+        success={success}
+        onSubmit={handleSubmit}
+      >
+        <Message error header="Oops!" content={error} />
+
         <Message
           success
           icon="check"
@@ -131,7 +158,7 @@ const CreateProduct = () => {
 
         <Form.Field
           control={Button}
-          disabled={loading}
+          disabled={disabled || loading}
           color="blue"
           icon="pencil alternate"
           content="Submit"
