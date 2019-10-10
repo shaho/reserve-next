@@ -1,11 +1,16 @@
 import React from "react";
+import { Segment } from "semantic-ui-react";
 
-const cart = () => {
+import CartItemList from "../components/Cart/CartItemList";
+import CartSummary from "../components/Cart/CartSummary";
+
+const Cart = () => {
   return (
-    <div>
-      <h1>cart</h1>
-    </div>
+    <Segment>
+      <CartItemList />
+      <CartSummary />
+    </Segment>
   );
 };
 
-export default cart;
+export default Cart;
