@@ -1,5 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import isEmail from "validator/lib/isEmail";
+import isLength from "validator/lib/isLength";
 
 import User from "../../models/User";
 import connectDb from "../../utils/connectDb";
@@ -12,6 +14,17 @@ export default async (request, response) => {
 
     if (!name || !email || !password) {
       return response.status(422).send("User missing one or more fileds");
+    }
+
+    // Validate name/email/password
+    if (!isLength(name, { min: 3, max: 10 })) {
+      return response.status(422).send("Name must be 3-10 charachters long");
+    } else if (!isEmail(email)) {
+      return response.status(422).send("Email must be valid");
+    } else if (!isLength(password, { min: 3 })) {
+      return response
+        .status(422)
+        .send("Password must be at least 6 charachters");
     }
 
     // Check to see if the user already exists in the db

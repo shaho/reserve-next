@@ -40,8 +40,12 @@ const Login = () => {
     try {
       setLoading(true);
       setError("");
+
+      //
     } catch (error) {
       catchErrors(error, setError);
+
+      //
     } finally {
       setLoading(false);
     }
