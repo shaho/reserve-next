@@ -1,5 +1,5 @@
 import App from "next/app";
-import { parseCookies } from "nookies";
+import { parseCookies, destroyCookie } from "nookies";
 import axios from "axios";
 
 import Layout from "../components/_App/Layout";
@@ -33,6 +33,10 @@ class MyApp extends App {
         pageProps.user = user;
       } catch (error) {
         console.error("Error getting current user", error);
+
+        // Handling inavlid token
+        destroyCookie(ctx, "token");
+        redirectUser(ctx, "/login");
       }
     }
 
