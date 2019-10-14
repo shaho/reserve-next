@@ -3,16 +3,22 @@ import Router, { useRouter } from "next/router";
 import { Menu, Container, Image, Icon } from "semantic-ui-react";
 import NProgress from "nprogress";
 
+import { handleLogout } from "../../utils/auth";
+
 Router.onRouteChangeStart = () => NProgress.start();
 Router.onRouteChangeComplete = () => NProgress.done();
 Router.onRouteChangeError = () => NProgress.done();
 
 const Header = ({ user }) => {
   const router = useRouter();
-
   function isActive(route) {
     return route === router.pathname;
   }
+
+  // Checking for user role
+  const isRoot = user && user.role === "root";
+  const isAdmin = user && user.role === "admin";
+  const isRootOrAdmin = isRoot || isAdmin;
 
   return (
     <Menu stackable fluid id="menu" inverted>
@@ -37,8 +43,8 @@ const Header = ({ user }) => {
           </Menu.Item>
         </Link>
 
-        {/* User */}
-        {user && (
+        {/* User and its role */}
+        {isRootOrAdmin && (
           <Link href="/create">
             <Menu.Item header active={isActive("/create")}>
               <Icon name="add square" size="large" />
@@ -57,7 +63,7 @@ const Header = ({ user }) => {
               </Menu.Item>
             </Link>
 
-            <Menu.Item header>
+            <Menu.Item header onClick={handleLogout}>
               <Icon name="sign out" size="large" />
               Logout
             </Menu.Item>
