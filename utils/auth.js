@@ -5,3 +5,13 @@ export const handleLogin = (token) => {
   cookie.set("token", token);
   Router.push("/account");
 };
+
+export const redirectUser = (ctx, location) => {
+  // ctx.req NOT ctx.request
+  if (ctx.req) {
+    ctx.res.writeHead(302, { Location: location });
+    ctx.res.end();
+  } else {
+    Router.push(location);
+  }
+};
