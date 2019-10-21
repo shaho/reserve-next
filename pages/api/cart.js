@@ -12,11 +12,12 @@ export default async (req, res) => {
   }
   try {
     // Verify token
-    const userId = jwt.verify(
+    const { userId } = jwt.verify(
       req.headers.authorization,
       process.env.JWT_SECRET,
     );
 
+    // Populate Cart with selected products for current user based on its user ID
     const cart = await Cart.findOne({ user: userId }).populate({
       path: "products.product",
       model: "Product",
