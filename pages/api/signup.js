@@ -9,31 +9,27 @@ import connectDb from "../../utils/connectDb";
 
 connectDb();
 
-export default async (request, response) => {
+export default async (req, res) => {
   try {
-    const { name, email, password } = request.body;
+    const { name, email, password } = req.body;
 
-    if (!name || !email || !password) {
-      return response.status(422).send("User missing one or more fileds");
-    }
+    // if (!name || !email || !password) {
+    //   return res.status(422).send("User missing one or more fileds");
+    // }
 
     // Validate name/email/password
     if (!isLength(name, { min: 3, max: 10 })) {
-      return response.status(422).send("Name must be 3-10 charachters long");
+      return res.status(422).send("Name must be 3-10 charachters long");
     } else if (!isEmail(email)) {
-      return response.status(422).send("Email must be valid");
+      return res.status(422).send("Email must be valid");
     } else if (!isLength(password, { min: 3 })) {
-      return response
-        .status(422)
-        .send("Password must be at least 6 charachters");
+      return res.status(422).send("Password must be at least 6 charachters");
     }
 
     // Check to see if the user already exists in the db
     const user = await User.findOne({ email });
     if (user) {
-      return response
-        .status(422)
-        .send(`User already exists with email ${email}`);
+      return res.status(422).send(`User already exists with email ${email}`);
     }
 
     // Hash the password
@@ -55,9 +51,9 @@ export default async (request, response) => {
     });
 
     // Send back token
-    response.status(201).json(token);
+    res.status(201).json(token);
   } catch (error) {
     console.error(error);
-    response.status(500).send("Error Sign up user, Please try again later");
+    res.status(500).send("Error Sign up user, Please try again later");
   }
 };

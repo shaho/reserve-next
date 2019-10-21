@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 
-const CardSchema = new mongoose.Schema({
+const { ObjectId } = mongoose.Schema.Types;
+
+const CartSchema = new mongoose.Schema({
   user: {
     type: ObjectId,
     ref: "User",
@@ -19,5 +21,4 @@ const CardSchema = new mongoose.Schema({
   ],
 });
 
-export default mongoose.models.Card ||
-  mongoose.model.Schema("Card", CardSchema);
+export default mongoose.models.Cart || mongoose.model("Cart", CartSchema);
