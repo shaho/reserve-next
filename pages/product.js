@@ -7,7 +7,7 @@ import baseUrl from "../utils/baseUrl";
 const Product = ({ product, user }) => {
   return (
     <>
-      <ProductSummary {...product} />
+      <ProductSummary user={user} {...product} />
       <ProductAttributes user={user} {...product} />
     </>
   );
