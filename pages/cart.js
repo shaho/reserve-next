@@ -1,4 +1,4 @@
-import { Segment, Card } from "semantic-ui-react";
+import { Segment } from "semantic-ui-react";
 import axios from "axios";
 import { parseCookies } from "nookies";
 
@@ -6,11 +6,11 @@ import baseUrl from "../utils/baseUrl";
 import CartItemList from "../components/Cart/CartItemList";
 import CartSummary from "../components/Cart/CartSummary";
 
-const Cart = ({ products }) => {
+const Cart = ({ products, user }) => {
   return (
     <Segment>
-      <CartItemList />
-      <CartSummary />
+      <CartItemList user={user} products={products} />
+      <CartSummary products={products} />
     </Segment>
   );
 };
