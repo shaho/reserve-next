@@ -1,2 +1,2 @@
 # Reserve Next
-A server side based React App based on Next.js
+A server side based React App based on Next.js and MongoDB
