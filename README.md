@@ -1,2 +1,2 @@
 # Reserve Next Shop
-A server side based React App based on Next.js and MongoDB
+A server side React App based on Next.js and MongoDB
